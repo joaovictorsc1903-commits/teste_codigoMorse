@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MORSE FX</title>
+<title>MORSE IOT</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap');
+@import url('fonts.googleapis.com/css?family=Roboto:700');
 
 body {
   background: radial-gradient(circle at top left, #001018, #000);
@@ -38,7 +38,7 @@ h1 {
 .container {
   background: rgba(0, 20, 40, 0.8);
   border: 1px solid #00e0ff;
-  box-shadow: 0 0 30px #00e0ff;
+  box-shadow: 0 0 50px #00e0ff;
   padding: 40px;
   border-radius: 15px;
   width: 90%;
@@ -64,7 +64,7 @@ input:focus {
 }
 
 button {
-  margin-left: 10px;
+  margin: 10px;
   padding: 15px 20px;
   background: #00e0ff;
   border: none;
@@ -116,16 +116,17 @@ footer {
 </head>
 <body>
 
-<h1>MORSE FX</h1>
+<h1>MORSE IOT</h1>
 
 <div class="container">
-  <input type="text" id="resultado" placeholder="Digite sua mensagem">
-  <button onclick="traduzir()">Traduzir</button>
-  <div id="texto"></div>
+  <input type="text" id="texto" placeholder="Digite texto ou código Morse">
+  <div>
+    <button onclick="traduzirParaMorse()">Texto para Morse</button>
+    <button onclick="traduzirParaTexto()">Morse para Texto</button>
+  </div>
+  <div id="resultado"></div>
   <div class="light" id="light"></div>
 </div>
-
-<footer><span style="color:#00e0ff;"></span></footer>
 
 <script>
 const morse = {
@@ -163,27 +164,40 @@ const morse = {
   '\n': '·−·−·−'
 };
 
-function traduzir() {
-  const texto = document.getElementById("resultado").value.toUpperCase();
-  const resultado = document.getElementById("texto");
+// cria o inverso (Morse → letra)
+const texto = {};
+for (let char in morse) {
+  texto[morse[char]] = char;
+}
+
+// === TRADUÇÃO TEXTO → MORSE ===
+function traduzirParaMorse() {
+  const entrada = document.getElementById("texto").value.toUpperCase();
+  const resultado = document.getElementById("resultado");
   let traducao = "";
 
-  for (let char of texto) {
-    if (morse[char]) {
-      traducao += morse[char] + " ";
-    } else if (char === " ") {
-      traducao += "/ ";
-    } else {
-      traducao += "? ";
-    }
+  for (let char of entrada) {
+    traducao += morse[char] ? morse[char] + " " : "? ";
   }
 
   resultado.innerHTML = traducao.trim();
-
-  // Toca o som e anima
   tocarMorse(traducao);
 }
 
+// === TRADUÇÃO MORSE → TEXTO ===
+function traduzirParaTexto() {
+  const entrada = document.getElementById("texto").value.trim();
+  const resultado = document.getElementById("resultado");
+
+  const palavras = entrada.split(" / "); // separa palavras
+  let traducao = palavras.map(palavra =>
+    palavra.split(" ").map(sinal => texto[sinal] || "?").join("")
+  ).join(" ");
+
+  resultado.innerHTML = traducao;
+}
+
+// === SOM E LUZ ===
 function tocarMorse(codigo) {
   const light = document.getElementById("light");
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
