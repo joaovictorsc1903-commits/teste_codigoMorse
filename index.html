@@ -119,9 +119,9 @@ footer {
 <h1>MORSE FX</h1>
 
 <div class="container">
-  <input type="text" id="texto" placeholder="Digite sua mensagem...">
+  <input type="text" id="resultado" placeholder="Digite sua mensagem">
   <button onclick="traduzir()">Traduzir</button>
-  <div id="resultado"></div>
+  <div id="texto"></div>
   <div class="light" id="light"></div>
 </div>
 
@@ -164,8 +164,8 @@ const morse = {
 };
 
 function traduzir() {
-  const texto = document.getElementById("texto").value.toUpperCase();
-  const resultado = document.getElementById("resultado");
+  const texto = document.getElementById("resultado").value.toUpperCase();
+  const resultado = document.getElementById("texto");
   let traducao = "";
 
   for (let char of texto) {
@@ -220,4 +220,3 @@ function tocarMorse(codigo) {
 </script>
 </body>
 </html>
-
